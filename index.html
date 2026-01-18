@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bhanu Prakash Reddy Vangala - Software Engineer</title>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -276,6 +278,152 @@
             margin-top: 30px;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #667eea;
+        }
+
+        .modal h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border: none;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2em;
@@ -321,7 +469,7 @@
             <p class="tagline">Software Engineer | Problem Solver | Full Stack Developer</p>
             <div class="contact-info">
                 <div class="contact-item">
-                    📧 <a href="mailto:bhanuprakashreddyvangala@gmail.com">bhanuprakashreddyvangala@gmail.com</a>
+                    📧 <a href="#" onclick="openContactModal(); return false;">bhanuprakashreddyvangala@gmail.com</a>
                 </div>
                 <div class="contact-item">
                     📱 +91 9392688532
@@ -355,10 +503,6 @@
                 <div class="skill-category">
                     <h3>Programming</h3>
                     <p>Java (Strong OOPs Concepts), Data Structures & Algorithms</p>
-                </div>
-                <div class="skill-category">
-                    <h3>Frameworks</h3>
-                    <p>Spring Boot</p>
                 </div>
                 <div class="skill-category">
                     <h3>Web Technologies</h3>
@@ -463,9 +607,39 @@
             <p>© 2026 Bhanu Prakash Reddy Vangala. All Rights Reserved.</p>
             <p>Languages: English, Telugu, Hindi</p>
         </footer>
+
+        <!-- Contact Modal -->
+        <div id="contactModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeContactModal()">&times;</span>
+                <h2>📧 Send Me a Message</h2>
+                <form id="contactForm" onsubmit="sendEmail(event)">
+                    <div class="form-group">
+                        <label for="senderEmail">Your Email Address *</label>
+                        <input type="email" id="senderEmail" name="senderEmail" required placeholder="your.email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="senderName">Your Name (Optional)</label>
+                        <input type="text" id="senderName" name="senderName" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Your Message *</label>
+                        <textarea id="message" name="message" required placeholder="Type your message here..."></textarea>
+                    </div>
+                    <button type="submit" class="send-btn" id="sendBtn">Send Message</button>
+                    <div id="statusMessage" class="status-message"></div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
+        // Initialize EmailJS with your public key
+        // IMPORTANT: Replace 'YOUR_PUBLIC_KEY' with your actual EmailJS public key
+        (function(){
+            emailjs.init("CbYnHc1MFuKzxwceN"); 
+        })();
+
         // Load the uploaded profile image
         window.addEventListener('DOMContentLoaded', async () => {
             try {
@@ -505,6 +679,77 @@
 
             // Smooth scroll to section
             selectedSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Contact Modal Functions
+        function openContactModal() {
+            document.getElementById('contactModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            document.getElementById('contactForm').reset();
+            document.getElementById('statusMessage').className = 'status-message';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('contactModal');
+            if (event.target === modal) {
+                closeContactModal();
+            }
+        }
+
+        // Send Email Function using EmailJS
+        async function sendEmail(event) {
+            event.preventDefault();
+            
+            const sendBtn = document.getElementById('sendBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            const senderEmail = document.getElementById('senderEmail').value;
+            const senderName = document.getElementById('senderName').value || 'Anonymous';
+            const message = document.getElementById('message').value;
+
+            // Disable button and show loading
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+            statusMessage.className = 'status-message';
+            statusMessage.textContent = '';
+
+            // EmailJS Configuration
+            // IMPORTANT: Replace these with your actual EmailJS credentials
+            const serviceID = 'service_v7odlu4';      // Get from EmailJS dashboard
+            const templateID = 'template_xrcl0mp';    // Get from EmailJS dashboard
+            
+            const templateParams = {
+                from_name: senderName,
+                from_email: senderEmail,
+                message: message,
+                to_email: 'bhanuprakashreddyvangala@gmail.com'
+            };
+
+            try {
+                await emailjs.send(serviceID, templateID, templateParams);
+                
+                statusMessage.className = 'status-message success';
+                statusMessage.textContent = '✅ Message sent successfully! I will get back to you soon.';
+                document.getElementById('contactForm').reset();
+                
+                setTimeout(() => {
+                    closeContactModal();
+                }, 2500);
+                
+            } catch (error) {
+                console.error('EmailJS Error:', error);
+                statusMessage.className = 'status-message error';
+                statusMessage.textContent = '❌ Failed to send message. Please email me directly at bhanuprakashreddyvangala@gmail.com';
+            }
+
+            // Re-enable button
+            sendBtn.disabled = false;
+            sendBtn.textContent = 'Send Message';
         }
     </script>
 </body>
